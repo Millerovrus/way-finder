@@ -1,7 +1,7 @@
 public class Kommivoyazher {
     private static final double INF = 1.0/0.0;
     private boolean stopSearch = false;
-    private Way[] finishWay;
+    private Way[] foundWays;
     private int count = 0;
     double[][] savedMatrix;
 
@@ -53,7 +53,7 @@ public class Kommivoyazher {
         double[] min_j = new double[m.length-1];
         for (int i = 1; i < m.length; i++) {
             double min = INF;
-            for (int j = 1; j <  m.length+1-1; j++) {           //m.length+1-1+1-1 чтобы не ругалось на дубликат
+            for (int j = 1; j <  m.length+1-1; j++) {           //m.length+1-1 чтобы не ругалось на дубликат
                 if (m[j][i] < min) {
                     min = m[j][i];
                 }
@@ -144,7 +144,7 @@ public class Kommivoyazher {
         }
 
         //добавление start и finish в массив finishWay
-        finishWay[count] = new Way((int)m[max_i][0], (int)m[0][max_j]);
+        foundWays[count] = new Way((int)m[max_i][0], (int)m[0][max_j]);
         count++;
 
         //удаление строки и столбца, в которой максимальный оценочный элемент
@@ -168,14 +168,14 @@ public class Kommivoyazher {
         //флаг остановки программы, когда размер матрицы 2
         if (newMatrix.length == 2) {
             stopSearch = true;
-            finishWay[count] = new Way((int)newMatrix[1][0], (int)newMatrix[0][1]);
+            foundWays[count] = new Way((int)newMatrix[1][0], (int)newMatrix[0][1]);
         }
         return newMatrix;
     }
 
     // инициализация массива с конечными значениями
     public void finishWayInitialization(int n) {
-        finishWay = new Way[n-1];
+        foundWays = new Way[n-1];
     }
 
     //сохраняем заданную матрицу, чтобы потом получить из нее edges
@@ -193,10 +193,10 @@ public class Kommivoyazher {
         return savedMatrix;
     }
 
-    public void wayToString() {
+    public void printFoundWays() {
         System.out.println("\nНайденные пути");
-        for (int i = 0; i < finishWay.length; i++) {
-            System.out.println(finishWay[i].toString());
+        for (int i = 0; i < foundWays.length; i++) {
+            System.out.println(foundWays[i].toString());
         }
     }
 

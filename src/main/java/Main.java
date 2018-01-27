@@ -16,7 +16,8 @@ public class Main {
 
         //инициализация массива путей
         k.finishWayInitialization(matrix.length);
-        //сохраняем начальную матрицу, потому что потом из нее будем вытаскивать значения
+
+        //сохраняем начальную матрицу, потому что потом из нее будем вытаскивать значения ребер
         k.saveMatrix(matrix);
 
         while (!k.isStopSearch()) {
@@ -42,6 +43,6 @@ public class Main {
             k.print(matrix);
         }
 
-        k.wayToString();
+        k.printFoundWays();
     }
 }
