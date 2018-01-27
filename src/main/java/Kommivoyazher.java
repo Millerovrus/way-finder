@@ -3,7 +3,7 @@ public class Kommivoyazher {
     private boolean stopSearch = false;
     private Way[] foundWays;
     private int count = 0;
-    double[][] savedMatrix;
+    private double[][] savedMatrix;
 
     //вывод матрицы
     public void print(double m[][]) {
