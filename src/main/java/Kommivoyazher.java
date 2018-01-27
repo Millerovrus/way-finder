@@ -143,7 +143,7 @@ public class Kommivoyazher {
             }
         }
 
-        //добавление start и finish в массив finishWay
+        //добавление start и finish в массив foundWays
         foundWays[count] = new Way((int)m[max_i][0], (int)m[0][max_j]);
         count++;
 
@@ -174,7 +174,7 @@ public class Kommivoyazher {
     }
 
     // инициализация массива с конечными значениями
-    public void finishWayInitialization(int n) {
+    public void foundWayInitialization(int n) {
         foundWays = new Way[n-1];
     }
 
@@ -189,15 +189,29 @@ public class Kommivoyazher {
         }
     }
 
-    public double[][] getSavedMatrix() {
-        return savedMatrix;
+    public void installEdgesForFoundWays() {
+        for (int i = 0; i < foundWays.length; i++) {
+            int iEdge = -1, jEdge = -1;
+            for (int j = 0; j < savedMatrix.length; j++) {
+                if (savedMatrix[j][0] == foundWays[i].getStart()) {
+                    iEdge = j;
+                }
+                if (savedMatrix[0][j] == foundWays[i].getFinish()) {
+                    jEdge = j;
+                }
+            }
+            foundWays[i].setEdge(savedMatrix[iEdge][jEdge]);
+        }
     }
 
     public void printFoundWays() {
+        double sum = 0;
         System.out.println("\nНайденные пути");
         for (int i = 0; i < foundWays.length; i++) {
             System.out.println(foundWays[i].toString());
+            sum+=foundWays[i].getEdge();
         }
+        System.out.println("Общая длина маршрута = " + sum);
     }
 
     public boolean isStopSearch() {

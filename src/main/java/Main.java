@@ -15,7 +15,7 @@ public class Main {
         };
 
         //инициализация массива путей
-        k.finishWayInitialization(matrix.length);
+        k.foundWayInitialization(matrix.length);
 
         //сохраняем начальную матрицу, потому что потом из нее будем вытаскивать значения ребер
         k.saveMatrix(matrix);
@@ -42,7 +42,7 @@ public class Main {
             System.out.print("\n\nМатрица после редукции матрицы:");
             k.print(matrix);
         }
-
+        k.installEdgesForFoundWays();
         k.printFoundWays();
     }
 }
