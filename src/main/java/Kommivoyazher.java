@@ -1,12 +1,18 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Kommivoyazher {
     private static final double INF = 1.0/0.0;
     private boolean stopSearch = false;
-    private Way[] foundWays;
-    private int count = 0;
-    private double[][] savedMatrix;
+    private double[][] initialMatrix;
+    private double[][] tempMatrix;
+    private List<Way> tempWays = new ArrayList<>();
+    private List<Way> foundWays = new ArrayList<>();
+    private int max_i = Integer.MIN_VALUE;
+    private int max_j = Integer.MIN_VALUE;
 
     //вывод матрицы
-    public void print(double m[][]) {
+    private void print(double m[][]) {
         for (int i = 0; i < m.length; i++) {
             System.out.println();
             for (int j = 0; j < m.length; j++) {
@@ -66,7 +72,7 @@ public class Kommivoyazher {
     }
 
     //редукция строк. Из каждой строки матрицы вычитаем соответствующий этой строке минимальный элемент
-    public void rowsReduction(double m[][]) {
+    private void rowsReduction(double m[][]) {
         double[] min_i = findMinimumsOfRows(m);
         print(min_i);
         for (int i = 1; i < m.length; i++) {
@@ -77,7 +83,7 @@ public class Kommivoyazher {
     }
 
     //редукция столбцов. Из каждого столбца матрицы вычитаем соответствующий этому столбцу минимальный элемент
-    public void columnsReduction(double m[][]) {
+    private void columnsReduction(double m[][]) {
         double[] min_j = findMinimumsOfColumns(m);
         print(min_j);
         for (int i = 1; i < m.length; i++) {
@@ -104,10 +110,7 @@ public class Kommivoyazher {
         return min_i+min_j;
     }
 
-    //редукция матрицы. Ищем оценочкую матрицу, состоящую из оценок для нулей. Находим максимальную оценку. Ту строку и столбец, где располагается максимальная оценка
-    //вычеркиваем. Элемент, соответствующий обратному пути (если он есть) делаем равным INF
-    public double[][] matrixReduction(double m[][]) {
-
+    private void findEvaluationMatrix(double m[][]){
         //оценочная матрица
         double[][] evaluationMatrix = new double[m.length-1][m.length-1];
 
@@ -115,12 +118,15 @@ public class Kommivoyazher {
             for (int j = 1; j < m.length; j++) {
                 if (m[i][j] == 0) {
                     evaluationMatrix[i-1][j-1] = findEvaluation(m, i, j);
+                } else {
+                    evaluationMatrix[i-1][j-1] = -INF;
                 }
             }
         }
         //нахождение максимального элемента оценочной матрицы. Запоминаем номер строки и столбца
-        int max_i = Integer.MIN_VALUE, max_j = Integer.MIN_VALUE;
         double maxElement = -INF;
+        max_i = Integer.MIN_VALUE;
+        max_i = Integer.MIN_VALUE;
 
         for (int i = 0; i < evaluationMatrix.length; i++) {
             for (int j = 0; j < evaluationMatrix.length; j++) {
@@ -131,7 +137,52 @@ public class Kommivoyazher {
                 }
             }
         }
+    }
 
+    //составляем временный путь и смотрим в нем подциклы
+    private boolean checkSubcycle(double m[][]) {
+        boolean checkForCreateNewWay = true;
+        if (tempWays.size() == 0) {
+            tempWays.add(new Way((int) m[max_i][0], (int) m[0][max_j]));
+            checkForCreateNewWay = false;
+        } else {
+            for (Way tempWay : tempWays) {
+                if (m[max_i][0] == tempWay.getFinish() && m[0][max_j] == tempWay.getStart()) {
+                    return false;
+                } else {
+                    if (m[max_i][0] == tempWay.getFinish()) {
+                        tempWay.setFinish((int) m[0][max_j]);
+                        checkForCreateNewWay = false;
+                        break;
+                    } else {
+                        if (m[0][max_j] == tempWay.getStart()) {
+                            tempWay.setStart((int) m[max_i][0]);
+                            checkForCreateNewWay = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (checkForCreateNewWay) {
+            tempWays.add(new Way((int) m[max_i][0], (int) m[0][max_j]));
+        } else {
+            for (int i = 0; i < tempWays.size(); i++) {
+                for (int j = 0; j < tempWays.size(); j++) {
+                    if (tempWays.get(i).getFinish() == tempWays.get(j).getStart()) {
+                        tempWays.get(i).setFinish(tempWays.get(j).getFinish());
+                        tempWays.remove(j);
+                        break;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    //редукция матрицы. Ищем оценочкую матрицу, состоящую из оценок для нулей. Находим максимальную оценку. Ту строку и столбец, где располагается максимальная оценка
+    //вычеркиваем. Элемент, соответствующий обратному пути (если он есть) делаем равным INF
+    private double[][] matrixReduction(double m[][]) {
         //обратный путь, если он существует, делаем равным INF
         for (int j = 0; j < m.length; j++) {
             if (m[0][j] == m[max_i][0]) {
@@ -144,8 +195,7 @@ public class Kommivoyazher {
         }
 
         //добавление start и finish в массив foundWays
-        foundWays[count] = new Way((int)m[max_i][0], (int)m[0][max_j]);
-        count++;
+        foundWays.add(new Way((int)m[max_i][0], (int)m[0][max_j]));
 
         //удаление строки и столбца, в которой максимальный оценочный элемент
         for (int i = 0; i < m.length; i++) {
@@ -168,53 +218,101 @@ public class Kommivoyazher {
         //флаг остановки программы, когда размер матрицы 2
         if (newMatrix.length == 2) {
             stopSearch = true;
-            foundWays[count] = new Way((int)newMatrix[1][0], (int)newMatrix[0][1]);
+            foundWays.add(new Way((int)newMatrix[1][0], (int)newMatrix[0][1]));
         }
         return newMatrix;
     }
 
-    // инициализация массива с конечными значениями
-    public void foundWayInitialization(int n) {
-        foundWays = new Way[n-1];
-    }
-
     //сохраняем заданную матрицу, чтобы потом получить из нее edges
-    public void saveMatrix(double m[][]) {
-        savedMatrix = new double[m.length][m.length];
+    public void saveInitialMatrix(double m[][]) {
+        initialMatrix = new double[m.length][m.length];
         for (int i = 0; i < m.length; i++) {
             for (int j = 0; j < m.length; j++) {
-                savedMatrix[i][j] = m[i][j];
+                initialMatrix[i][j] = m[i][j];
             }
 
         }
     }
 
+    private void saveTempMatrix(double m[][]) {
+        tempMatrix = new double[m.length][m.length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+                tempMatrix[i][j] = m[i][j];
+            }
+
+        }
+    }
+
+    private double[][] getTempMatrix(){
+        tempMatrix[max_i][max_j] = INF;
+        return tempMatrix;
+    }
+
     public void installEdgesForFoundWays() {
-        for (int i = 0; i < foundWays.length; i++) {
+        for (Way foundWay : foundWays) {
             int iEdge = -1, jEdge = -1;
-            for (int j = 0; j < savedMatrix.length; j++) {
-                if (savedMatrix[j][0] == foundWays[i].getStart()) {
+            for (int j = 0; j < initialMatrix.length; j++) {
+                if (initialMatrix[j][0] == foundWay.getStart()) {
                     iEdge = j;
                 }
-                if (savedMatrix[0][j] == foundWays[i].getFinish()) {
+                if (initialMatrix[0][j] == foundWay.getFinish()) {
                     jEdge = j;
                 }
             }
-            foundWays[i].setEdge(savedMatrix[iEdge][jEdge]);
+            foundWay.setEdge(initialMatrix[iEdge][jEdge]);
         }
     }
 
     public void printFoundWays() {
         double sum = 0;
-        System.out.println("\nНайденные пути");
-        for (int i = 0; i < foundWays.length; i++) {
-            System.out.println(foundWays[i].toString());
-            sum+=foundWays[i].getEdge();
+        System.out.println("\n\nНайденные пути");
+        for (Way foundWay : foundWays) {
+            System.out.println(foundWay.toString());
+            sum+=foundWay.getEdge();
         }
         System.out.println("Общая длина маршрута = " + sum);
     }
 
-    public boolean isStopSearch() {
-        return stopSearch;
+    public void startSearch(double m[][]){
+        boolean needSave = true;
+        while (!stopSearch) {
+            System.out.println("\n\nНовый проход!");
+
+            System.out.print("\nНачальная матрица:");
+            print(m);
+
+            if (needSave) {
+                saveTempMatrix(m);
+            }
+
+            System.out.println("\n\nМассив минимумов по строкам:");
+            rowsReduction(m);
+
+            System.out.print("\n\nМатрица после редукции строк:");
+            print(m);
+
+            System.out.println("\n\nМассив минимумов по столбцам: ");
+            columnsReduction(m);
+
+            System.out.print("\n\nМатрица после редукции столбцов:");
+            print(m);
+
+            findEvaluationMatrix(m);
+
+            if (checkSubcycle(m)){
+                needSave = true;
+                m = matrixReduction(m);
+                System.out.print("\n\nМатрица после редукции матрицы:");
+                print(m);
+            } else {
+                System.out.println("\n\nОбнаружен подцикл! Проделываем последний шаг еще раз заменив ребро на M");
+                needSave = false;
+                m = getTempMatrix();
+                startSearch(m);
+
+            }
+
+        }
     }
 }

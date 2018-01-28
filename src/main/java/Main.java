@@ -5,43 +5,25 @@ public class Main {
 
         //исходные данные
         double inf = 1.0/0.0;
-
-        double[][] matrix = {{0, 1, 2, 3, 4, 5},
-                {1, inf, 20, 18, 12, 8},
-                {2, 5, inf, 14, 7, 11},
-                {3, 12, 18, inf, 6, 11},
-                {4, 11, 17, 11, inf, 12},
-                {5, 5, 5, 5, 5, inf}
+        double[][] matrix = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
+                {1, inf, 26, 42, 15, 29, 25, 26, 42, 15, 29, 25},
+                {2, 7, inf, 16, 1, 30, 25, 7, 16, 1, 30, 25},
+                {3, 20, 13, inf, 35, 5, 0, 20, 13, 35, 5, 0},
+                {4, 21, 16, 25, inf, 18, 18, 21, 16, 25, 18, 18},
+                {5, 12, 46, 27, 48, inf, 5, 12, 46, 27, 48, 5},
+                {6, 23, 5, 5, 9, 5, inf, 23, 5, 5, 9, 5},
+                {7, 26, 42, 15, 29, 25, 26, inf, 42, 15, 29, 25},
+                {8, 7, 16, 1, 30, 25, 7, 16, inf, 1, 30, 25},
+                {9, 20, 13, 35, 5, 0, 20, 13, 35, inf, 5, 0},
+                {10, 21, 16, 25, 18, 18, 21, 16, 25, 18, inf, 18},
+                {11, 12, 46, 27, 48, 5, 12, 46, 27, 48, 5, inf}
         };
 
-        //инициализация массива путей
-        k.foundWayInitialization(matrix.length);
-
         //сохраняем начальную матрицу, потому что потом из нее будем вытаскивать значения ребер
-        k.saveMatrix(matrix);
+        k.saveInitialMatrix(matrix);
 
-        while (!k.isStopSearch()) {
-            System.out.println("\nНовый проход!");
+        k.startSearch(matrix);
 
-            System.out.print("\n\nНачальная матрица:");
-            k.print(matrix);
-
-            System.out.println("\n\nМассив минимумов по строкам:");
-            k.rowsReduction(matrix);
-
-            System.out.print("\n\nМатрица после редукции строк:");
-            k.print(matrix);
-
-            System.out.println("\n\nМассив минимумов по столбцам: ");
-            k.columnsReduction(matrix);
-
-            System.out.print("\n\nМатрица после редукции столбцов:");
-            k.print(matrix);
-
-            matrix = k.matrixReduction(matrix);
-            System.out.print("\n\nМатрица после редукции матрицы:");
-            k.print(matrix);
-        }
         k.installEdgesForFoundWays();
         k.printFoundWays();
     }

@@ -1,6 +1,6 @@
 public class Way {
-    private int start;
-    private int finish;
+    private int start = 0;
+    private int finish = 0;
     private double edge;
 
     public int getStart() {
