@@ -3,6 +3,7 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         List<Edge> edges = new ArrayList<>();
+        String startPoint = "Воронеж";
         edges.add(new Edge("Воронеж", "Москва", 26));
         edges.add(new Edge("Воронеж", "Волгоград", 42));
         edges.add(new Edge("Воронеж", "Липецк", 15));
@@ -35,7 +36,14 @@ public class Main {
         edges.add(new Edge("Орел", "Курск", 5));
 
         Kommivoyazher k = new Kommivoyazher();
-        k.startSearch(edges);
+
+        List<Edge> finalResult= k.startSearch(edges, startPoint);
+        double price = 0;
+        for (Edge edge : finalResult) {
+            System.out.println(edge.toString());
+            price += edge.getWeight();
+        }
+        System.out.println("Стоимость поездки " + price);
 
     }
 }

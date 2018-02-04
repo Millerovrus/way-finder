@@ -12,28 +12,28 @@ public class Kommivoyazher {
     private List<String> startingPoints = new ArrayList<>();
     private List<String> destinationPoints = new ArrayList<>();
 
-    //вывод матрицы смежности
-    private void printAdjacencyMatrix() {
-        for (int i = 0; i < adjacencyMatrix.length; i++) {
-            for (int j = 0; j < adjacencyMatrix.length; j++) {
-                if (adjacencyMatrix[i][j] == INF) {
-                    System.out.print("INF" + "\t\t");
-                } else {
-                    System.out.print(adjacencyMatrix[i][j] + "\t\t");
-                }
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    //вывод одномерных массивов
-    private void print(double m[]) {
-        for (int i = 0; i < m.length; i++) {
-            System.out.print(m[i] + " ");
-        }
-        System.out.println("\n");
-    }
+//    //вывод матрицы смежности
+//    private void printAdjacencyMatrix() {
+//        for (int i = 0; i < adjacencyMatrix.length; i++) {
+//            for (int j = 0; j < adjacencyMatrix.length; j++) {
+//                if (adjacencyMatrix[i][j] == INF) {
+//                    System.out.print("INF" + "\t\t");
+//                } else {
+//                    System.out.print(adjacencyMatrix[i][j] + "\t\t");
+//                }
+//            }
+//            System.out.println();
+//        }
+//        System.out.println();
+//    }
+//
+//    //вывод одномерных массивов
+//    private void print(double m[]) {
+//        for (int i = 0; i < m.length; i++) {
+//            System.out.print(m[i] + " ");
+//        }
+//        System.out.println("\n");
+//    }
 
     //составление матрицы смежности
     private void buildAdjacencyMatrix(List<Edge> edges){
@@ -102,7 +102,7 @@ public class Kommivoyazher {
     //редукция строк. Из каждой строки матрицы вычитаем соответствующий этой строке минимальный элемент
     private void rowsReduction() {
         double[] min_i = findMinimumsOfRows();
-        print(min_i);
+//        print(min_i);
         for (int i = 0; i < adjacencyMatrix.length; i++) {
             for (int j = 0; j < adjacencyMatrix.length; j++) {
                 adjacencyMatrix[i][j]-=min_i[i];
@@ -113,7 +113,7 @@ public class Kommivoyazher {
     //редукция столбцов. Из каждого столбца матрицы вычитаем соответствующий этому столбцу минимальный элемент
     private void columnsReduction() {
         double[] min_j = findMinimumsOfColumns();
-        print(min_j);
+//        print(min_j);
         for (int i = 0; i < adjacencyMatrix.length; i++) {
             for (int j = 0; j < adjacencyMatrix.length; j++) {
                 adjacencyMatrix[j][i]-=min_j[i];
@@ -262,8 +262,7 @@ public class Kommivoyazher {
         return true;
     }
 
-    private List<Edge> getFinalResult(String startPoint, List<Edge> edges){
-        List<Edge> finalResult = new LinkedList<>();
+    private void getFinalResult(List<Edge> edges, String startPoint, List<Edge> finalResult){
         do {
             for (Way foundWay : foundWays) {
                 if (startPoint.equals(foundWay.getStart())) {
@@ -276,29 +275,28 @@ public class Kommivoyazher {
                 }
             }
         } while (!finalResult.get(0).getStartPoint().equals(finalResult.get(finalResult.size()-1).getDestinationPoint()));
-        return finalResult;
     }
 
     private void search(){
         boolean needSave = true;
         while (!stopSearch) {
-            printAdjacencyMatrix();
+//            printAdjacencyMatrix();
             if (needSave) {
                 saveTempMatrix();
             }
             findMinimumsOfRows();
             rowsReduction();
-            printAdjacencyMatrix();
+//            printAdjacencyMatrix();
             findMinimumsOfColumns();
             columnsReduction();
-            printAdjacencyMatrix();
+//            printAdjacencyMatrix();
             findEvaluationMatrix();
 
             if (checkSubcycle()){
                 needSave = true;
                 matrixReduction();
             } else {
-                System.out.println("\n\nОбнаружен подцикл! Проделываем последний шаг еще раз заменив ребро на INF");
+//                System.out.println("\n\nОбнаружен подцикл! Проделываем последний шаг еще раз заменив ребро на INF");
                 needSave = false;
                 tempMatrix[max_i][max_j] = INF;
                 adjacencyMatrix = tempMatrix;
@@ -308,15 +306,11 @@ public class Kommivoyazher {
         }
     }
 
-    public void startSearch(List<Edge> edges){
+    public List<Edge> startSearch(List<Edge> edges, String startPoint){
         buildAdjacencyMatrix(edges);
         search();
-        List<Edge> finalResult = getFinalResult("Воронеж", edges);
-        double price = 0;
-        for (Edge edge : finalResult) {
-            System.out.println(edge.toString());
-            price += edge.getWeight();
-        }
-        System.out.println("Стоимость поездки " + price);
+        List<Edge> finalResult = new LinkedList<>();
+        getFinalResult(edges, startPoint, finalResult);
+        return finalResult;
     }
 }
