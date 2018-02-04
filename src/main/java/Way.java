@@ -1,43 +1,34 @@
 public class Way {
-    private int start = 0;
-    private int finish = 0;
-    private double edge;
-
-    public int getStart() {
-        return start;
-    }
-
-    public void setStart(int start) {
-        this.start = start;
-    }
-
-    public int getFinish() {
-        return finish;
-    }
-
-    public void setFinish(int finish) {
-        this.finish = finish;
-    }
-
-    public double getEdge() {
-        return edge;
-    }
-
-    public void setEdge(double edge) {
-        this.edge = edge;
-    }
+    private String start;
+    private String finish;
 
     @Override
     public String toString() {
         return "Way{" +
-                "start=" + start +
-                ", finish=" + finish +
-                ", edge=" + edge +
+                "start='" + start + '\'' +
+                ", finish='" + finish + '\'' +
                 '}';
     }
 
-    public Way(int start, int finish) {
+    public Way(String start, String finish) {
         this.start = start;
+        this.finish = finish;
+    }
+
+    public String getStart() {
+
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public String getFinish() {
+        return finish;
+    }
+
+    public void setFinish(String finish) {
         this.finish = finish;
     }
 }

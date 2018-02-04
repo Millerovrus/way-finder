@@ -1,30 +1,41 @@
+import java.util.*;
+
 public class Main {
     public static void main(String[] args) {
+        List<Edge> edges = new ArrayList<>();
+        edges.add(new Edge("Воронеж", "Москва", 26));
+        edges.add(new Edge("Воронеж", "Волгоград", 42));
+        edges.add(new Edge("Воронеж", "Липецк", 15));
+        edges.add(new Edge("Воронеж", "Курск", 29));
+        edges.add(new Edge("Воронеж", "Орел", 25));
+        edges.add(new Edge("Москва", "Воронеж", 7));
+        edges.add(new Edge("Москва", "Волгоград", 16));
+        edges.add(new Edge("Москва", "Липецк", 1));
+        edges.add(new Edge("Москва", "Курск", 30));
+        edges.add(new Edge("Москва", "Орел", 25));
+        edges.add(new Edge("Волгоград", "Воронеж", 20));
+        edges.add(new Edge("Волгоград", "Москва", 13));
+        edges.add(new Edge("Волгоград", "Липецк", 35));
+        edges.add(new Edge("Волгоград", "Курск", 5));
+        edges.add(new Edge("Волгоград", "Орел", 0));
+        edges.add(new Edge("Липецк", "Воронеж", 21));
+        edges.add(new Edge("Липецк", "Москва", 16));
+        edges.add(new Edge("Липецк", "Волгоград", 25));
+        edges.add(new Edge("Липецк", "Курск", 18));
+        edges.add(new Edge("Липецк", "Орел", 21));
+        edges.add(new Edge("Курск", "Воронеж", 12));
+        edges.add(new Edge("Курск", "Москва", 46));
+        edges.add(new Edge("Курск", "Волгоград", 27));
+        edges.add(new Edge("Курск", "Липецк", 48));
+        edges.add(new Edge("Курск", "Орел", 5));
+        edges.add(new Edge("Орел", "Воронеж", 23));
+        edges.add(new Edge("Орел", "Москва", 5));
+        edges.add(new Edge("Орел", "Волгоград", 5));
+        edges.add(new Edge("Орел", "Липецк", 9));
+        edges.add(new Edge("Орел", "Курск", 5));
 
         Kommivoyazher k = new Kommivoyazher();
+        k.startSearch(edges);
 
-        //исходные данные
-        double inf = 1.0/0.0;
-        double[][] matrix = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
-                {1, inf, 26, 42, 15, 29, 25, 26, 42, 15, 29, 25},
-                {2, 7, inf, 16, 1, 30, 25, 7, 16, 1, 30, 25},
-                {3, 20, 13, inf, 35, 5, 0, 20, 13, 35, 5, 0},
-                {4, 21, 16, 25, inf, 18, 18, 21, 16, 25, 18, 18},
-                {5, 12, 46, 27, 48, inf, 5, 12, 46, 27, 48, 5},
-                {6, 23, 5, 5, 9, 5, inf, 23, 5, 5, 9, 5},
-                {7, 26, 42, 15, 29, 25, 26, inf, 42, 15, 29, 25},
-                {8, 7, 16, 1, 30, 25, 7, 16, inf, 1, 30, 25},
-                {9, 20, 13, 35, 5, 0, 20, 13, 35, inf, 5, 0},
-                {10, 21, 16, 25, 18, 18, 21, 16, 25, 18, inf, 18},
-                {11, 12, 46, 27, 48, 5, 12, 46, 27, 48, 5, inf}
-        };
-
-        //сохраняем начальную матрицу, потому что потом из нее будем вытаскивать значения ребер
-        k.saveInitialMatrix(matrix);
-
-        k.startSearch(matrix);
-
-        k.installEdgesForFoundWays();
-        k.printFoundWays();
     }
 }
