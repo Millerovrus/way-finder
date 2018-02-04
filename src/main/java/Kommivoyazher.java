@@ -12,7 +12,7 @@ public class Kommivoyazher {
     private List<String> startingPoints = new ArrayList<>();
     private List<String> destinationPoints = new ArrayList<>();
 
-//    //вывод матрицы смежности
+    //вывод матрицы смежности
 //    private void printAdjacencyMatrix() {
 //        for (int i = 0; i < adjacencyMatrix.length; i++) {
 //            for (int j = 0; j < adjacencyMatrix.length; j++) {
@@ -50,6 +50,11 @@ public class Kommivoyazher {
 
         //инициализируем матрицу смежности
         adjacencyMatrix = new double[startingPoints.size()][startingPoints.size()];
+        for (int i = 0; i < adjacencyMatrix.length; i++) {
+            for (int j = 0; j < adjacencyMatrix.length; j++) {
+                adjacencyMatrix[i][j] = INF;
+            }
+        }
 
         //заполняем матрицу смежности
         for (Edge edge : edges) {
@@ -62,10 +67,6 @@ public class Kommivoyazher {
                     }
                 }
             }
-        }
-        //пересечения городов полагаем равным бесконечности
-        for (int i = 0; i < adjacencyMatrix.length; i++) {
-            adjacencyMatrix[i][i] = INF;
         }
     }
 
