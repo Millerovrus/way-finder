@@ -262,13 +262,6 @@ public class Kommivoyazher {
         return true;
     }
 
-    private void printFoundWays() {
-        System.out.println("\n\nНайденные пути");
-        for (Way foundWay : foundWays) {
-            System.out.println(foundWay.toString());
-        }
-    }
-
     private List<Edge> getFinalResult(String startPoint, List<Edge> edges){
         List<Edge> finalResult = new LinkedList<>();
         do {
